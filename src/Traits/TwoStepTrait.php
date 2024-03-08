@@ -1,14 +1,19 @@
 <?php
 
-namespace jeremykenedy\laravel2step\App\Traits;
+namespace CodeBros\TwoStep\Traits;
 
-use Auth;
 use Carbon\Carbon;
+use CodeBros\TwoStep\Models\TwoStepAuth;
+use CodeBros\TwoStep\Notifications\SendVerificationCodeEmail;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use jeremykenedy\laravel2step\App\Models\TwoStepAuth;
-use jeremykenedy\laravel2step\App\Notifications\SendVerificationCodeEmail;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Random\RandomException;
 
-trait Laravel2StepTrait
+trait TwoStepTrait
 {
     /**
      * Check if the user is authorized.
@@ -16,10 +21,11 @@ trait Laravel2StepTrait
      * @param Request $request
      *
      * @return bool
+     * @throws RandomException
      */
-    public function twoStepVerification($request)
+    public function twoStepVerification($request): bool
     {
-        $user = Auth::User();
+        $user = auth()->user();
 
         if ($user) {
             $twoStepAuthStatus = $this->checkTwoStepAuthStatus($user->id);
@@ -41,11 +47,12 @@ trait Laravel2StepTrait
     /**
      * Check time since user was last verified and take apprpriate action.
      *
-     * @param collection $twoStepAuth
+     * @param TwoStepAuth $twoStepAuth
      *
      * @return bool
+     * @throws RandomException
      */
-    private function checkTimeSinceVerified($twoStepAuth)
+    private function checkTimeSinceVerified(TwoStepAuth $twoStepAuth): bool
     {
         $expireMinutes = config('laravel2step.laravel2stepVerifiedLifetimeMinutes');
         $now = Carbon::now();
@@ -64,11 +71,12 @@ trait Laravel2StepTrait
     /**
      * Reset TwoStepAuth collection item and code.
      *
-     * @param collection $twoStepAuth
+     * @param TwoStepAuth $twoStepAuth
      *
-     * @return collection
+     * @return TwoStepAuth
+     * @throws RandomException
      */
-    private function resetAuthStatus($twoStepAuth)
+    private function resetAuthStatus(TwoStepAuth $twoStepAuth): TwoStepAuth
     {
         $twoStepAuth->authCode = $this->generateCode();
         $twoStepAuth->authCount = 0;
@@ -84,13 +92,14 @@ trait Laravel2StepTrait
     /**
      * Generate Authorization Code.
      *
-     * @param int    $length
+     * @param int $length
      * @param string $prefix
      * @param string $suffix
      *
      * @return string
+     * @throws RandomException
      */
-    private function generateCode(int $length = 4, string $prefix = '', string $suffix = '')
+    private function generateCode(int $length = 4, string $prefix = '', string $suffix = ''): string
     {
         for ($i = 0; $i < $length; $i++) {
             $prefix .= random_int(0, 9);
@@ -100,38 +109,34 @@ trait Laravel2StepTrait
     }
 
     /**
-     * Create/retreive 2step verification object.
+     * Create/retrieve 2step verification object.
      *
      * @param int $userId
      *
-     * @return collection
+     * @return TwoStepAuth
      */
-    private function checkTwoStepAuthStatus(int $userId)
+    private function checkTwoStepAuthStatus(int $userId): TwoStepAuth
     {
-        $twoStepAuth = TwoStepAuth::firstOrCreate(
-            [
-                'userId' => $userId,
-            ],
-            [
-                'userId'    => $userId,
+        $twoStepAuth = TwoStepAuth::firstOrCreate([
+            'userId' => $userId,
+            ], [
                 'authCode'  => $this->generateCode(),
                 'authCount' => 0,
-            ]
-        );
+            ]);
 
         return $twoStepAuth;
     }
 
     /**
-     * Retreive the Verification Status.
+     * Retrieve the Verification Status.
      *
      * @param int $userId
      *
-     * @return collection || void
+     * @return Builder|Model
      */
     protected function getTwoStepAuthStatus(int $userId)
     {
-        return TwoStepAuth::where('userId', $userId)->firstOrFail();
+        return TwoStepAuth::query()->where('userId', '=', $userId)->firstOrFail();
     }
 
     /**
@@ -139,9 +144,9 @@ trait Laravel2StepTrait
      *
      * @param string $time
      *
-     * @return collection
+     * @return Collection
      */
-    protected function exceededTimeParser($time)
+    protected function exceededTimeParser($time): Collection
     {
         $tomorrow = Carbon::parse($time)->addMinutes(config('laravel2step.laravel2stepExceededCountdownMinutes'))->format('l, F jS Y h:i:sa');
         $remaining = $time->addMinutes(config('laravel2step.laravel2stepExceededCountdownMinutes'))->diffForHumans(null, true);
@@ -157,11 +162,11 @@ trait Laravel2StepTrait
     /**
      * Check if time since account lock has expired and return true if account verification can be reset.
      *
-     * @param datetime $time
+     * @param \DateTime $time
      *
      * @return bool
      */
-    protected function checkExceededTime($time)
+    protected function checkExceededTime($time): bool
     {
         $now = Carbon::now();
         $expire = Carbon::parse($time)->addMinutes(config('laravel2step.laravel2stepExceededCountdownMinutes'));
@@ -211,29 +216,33 @@ trait Laravel2StepTrait
     /**
      * Send verification code via notify.
      *
-     * @param array  $user
-     * @param string $deliveryMethod (nullable)
-     * @param string $code
+     * @param TwoStepAuth $twoStepAuth
      *
      * @return void
      */
-	//changes
-       protected function sendVerificationCodeNotification($twoStepAuth, $deliveryMethod = null)
+    protected function sendVerificationCodeNotification(TwoStepAuth $twoStepAuth): void
     {
-        $user = Auth::User();
-		if(!isset($user->mobiel)){
-			$user->notify(new SendVerificationCodeEmail($user, $twoStepAuth->authCode));
-		}else{
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL,"https://api.spryngsms.com/api/send.php");
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS,"USERNAME=".config('laravel2step.laravel2stepOtpAccount')."&PASSWORD=".config('laravel2step.laravel2stepOtpAuthToken')."&SENDER=".config('laravel2step.laravel2stepOtpFrom')."&ROUTE=".config('laravel2step.laravel2stepOtpRoute')."&DESTINATION=".$user->mobiel."&BODY=Code:".$twoStepAuth->authCode."");
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			$response = curl_exec($ch);
-			curl_close ($ch);
-		}
-        $twoStepAuth->requestDate = Carbon::now();
+        $user = auth()->user();
 
+        if (! isset($user->mobiel)) {
+            // If we don't have a mobile phone number we try to send the authentication code via email
+            $user->notify(new SendVerificationCodeEmail($user, $twoStepAuth->authCode));
+        } else {
+            // If we do have a mobile phone number we try to send the authentication code via SMS
+            $request = Http::baseUrl('https://rest.spryngsms.com/v1')
+                ->withToken(env('OTP_AUTH_TOKEN'))
+                ->post('messages', [
+                    'body' => 'Code: '.$twoStepAuth->authCode,
+                    "encoding" => "auto",
+                    "originator" => env('OTP_FROM'),
+                    "recipients" => [$user->mobiel],
+                    "route" => env('OTP_ROUTE'),
+                ])->json();
+
+            dd($request);
+        }
+
+        $twoStepAuth->requestDate = Carbon::now();
         $twoStepAuth->save();
     }
 }

@@ -1,14 +1,15 @@
 <?php
 
-namespace jeremykenedy\laravel2step\App\Http\Middleware;
+namespace CodeBros\TwoStep\Http\Middleware;
 
 use Closure;
+use CodeBros\TwoStep\Traits\TwoStepTrait;
 use Illuminate\Http\Request;
-use jeremykenedy\laravel2step\App\Traits\Laravel2StepTrait;
+use CodeBros\TwoStep\Traits\Laravel2StepTrait;
 
-class Laravel2step
+class TwoStepMiddleware
 {
-    use Laravel2StepTrait;
+    use TwoStepTrait;
 
     /**
      * Handle an incoming request.

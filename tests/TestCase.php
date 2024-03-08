@@ -2,7 +2,8 @@
 
 namespace jeremykenedy\laravel2step\Test;
 
-use jeremykenedy\laravel2step\Laravel2stepServiceProvider;
+use CodeBros\TwoStep\Http\Middleware\TwoStepMiddleware;
+use CodeBros\TwoStep\TwoStepServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
@@ -12,11 +13,11 @@ class TestCase extends OrchestraTestCase
      *
      * @param \Illuminate\Foundation\Application $app
      *
-     * @return jeremykenedy\laravel2step\Laravel2stepServiceProvider
+     * @return string[]
      */
     protected function getPackageProviders($app)
     {
-        return [Laravel2stepServiceProvider::class];
+        return [TwoStepServiceProvider::class];
     }
 
     /**
@@ -29,7 +30,7 @@ class TestCase extends OrchestraTestCase
     protected function getPackageAliases($app)
     {
         return [
-            Laravel2step::class,
+            TwoStepMiddleware::class,
         ];
     }
 }

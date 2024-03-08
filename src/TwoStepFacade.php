@@ -1,10 +1,11 @@
 <?php
 
-namespace jeremykenedy\laravel2step;
+namespace CodeBros\TwoStep;
 
+use CodeBros\TwoStep\Http\Middleware\TwoStepMiddleware;
 use Illuminate\Support\Facades\Facade;
 
-class Laravel2stepFacade extends Facade
+class TwoStepFacade extends Facade
 {
     /**
      * Gets the facade accessor.
@@ -13,6 +14,6 @@ class Laravel2stepFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return Laravel2step::class;
+        return TwoStepMiddleware::class;
     }
 }

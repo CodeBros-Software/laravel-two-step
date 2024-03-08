@@ -1,6 +1,6 @@
 {
-    "name": "jeremykenedy/laravel2step",
-    "description": "Laravel 2 Step Authentication Package",
+    "name": "codebros-nl/laravel-two-step",
+    "description": "Laravel 2 Step Authentication Package based on the Jeremy Kennedy package",
     "keywords": [
         "laravel",
         "2-step verification",
@@ -10,8 +10,8 @@
     "type": "package",
     "authors": [
         {
-            "name": "jeremykenedy",
-            "email": "jeremykenedy@gmail.com"
+            "name": "Norman Reinhard",
+            "email": "norman@codebros.nl"
         }
     ],
     "require": {
@@ -20,18 +20,18 @@
     },
     "autoload": {
         "psr-4": {
-            "jeremykenedy\\laravel2step\\": "src/"
+            "CodeBros\\TwoStep\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "jeremykenedy\\laravel2step\\Test\\": "tests/"
+            "CodeBros\\TwoStep\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "jeremykenedy\\laravel2step\\Laravel2stepServiceProvider"
+                "CodeBros\\TwoStep\\TwoStepServiceProvider"
             ]
         }
     },

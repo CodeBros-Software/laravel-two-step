@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use jeremykenedy\laravel2step\App\Traits\Laravel2StepTrait;
+use jeremykenedy\laravel2step\App\Traits\TwoStepTrait;
 use Validator;
 
 class TwoStepController extends Controller
 {
-    use Laravel2StepTrait;
+    use TwoStepTrait;
 
     private $_authCount;
     private $_authStatus;

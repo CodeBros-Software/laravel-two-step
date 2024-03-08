@@ -1,6 +1,6 @@
 <?php
 
-namespace jeremykenedy\laravel2step\App\Notifications;
+namespace CodeBros\TwoStep\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

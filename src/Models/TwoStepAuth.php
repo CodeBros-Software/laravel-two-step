@@ -1,6 +1,6 @@
 <?php
 
-namespace jeremykenedy\laravel2step\App\Models;
+namespace CodeBros\TwoStep\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -67,8 +67,8 @@ class TwoStepAuth extends Model
     public function __construct($attributes = [])
     {
         parent::__construct($attributes);
-        $this->table = config('laravel2step.laravel2stepDatabaseTable');
-        $this->connection = config('laravel2step.laravel2stepDatabaseConnection');
+        $this->table = config('laravel-two-step.laravel2stepDatabaseTable');
+        $this->connection = config('laravel-two-step.laravel2stepDatabaseConnection');
     }
 
     /**
@@ -94,7 +94,7 @@ class TwoStepAuth extends Model
      */
     public function user()
     {
-        return $this->hasOne(config('laravel2step.defaultUserModel'));
+        return $this->hasOne(config('laravel-two-step.defaultUserModel'));
     }
 
     /**

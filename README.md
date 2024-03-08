@@ -75,7 +75,7 @@ Register the package with laravel in `config/app.php` under `providers` with the
 
 ```php
     'providers' => [
-        jeremykenedy\laravel2step\laravel2stepServiceProvider::class,
+        jeremykenedy\laravel2step\TwoStepServiceProvider::class,
     ];
 ```
 
