@@ -238,8 +238,6 @@ trait TwoStepTrait
                     "recipients" => [$user->mobiel],
                     "route" => env('OTP_ROUTE'),
                 ])->json();
-
-            dd($request);
         }
 
         $twoStepAuth->requestDate = Carbon::now();
