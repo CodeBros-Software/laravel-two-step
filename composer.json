@@ -15,15 +15,8 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0|^8.1|^8.2",
-        "laravel/framework": "6.*|7.*|8.*|9.*|10.*"
-    },
-    "require-dev": {
-        "illuminate/support": "^8.5",
-        "laravel/laravel": "^8.0",
-        "laravel/tinker": "^2.4",
-        "orchestra/testbench": "^6.0",
-        "suin/phpcs-psr4-sniff": "^3.0"
+        "php": "^8.2",
+        "laravel/framework": "9.*|10.*"
     },
     "autoload": {
         "psr-4": {
@@ -46,5 +39,8 @@
         "sort-packages": true
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "require-dev": {
+        "orchestra/testbench": "^8.21"
+    }
 }
