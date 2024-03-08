@@ -5,7 +5,7 @@ namespace CodeBros\TwoStep\Http\Middleware;
 use Closure;
 use CodeBros\TwoStep\Traits\TwoStepTrait;
 use Illuminate\Http\Request;
-use CodeBros\TwoStep\Traits\Laravel2StepTrait;
+use Random\RandomException;
 
 class TwoStepMiddleware
 {
@@ -14,10 +14,11 @@ class TwoStepMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param Request  $request
+     * @param Request $request
      * @param \Closure $response
      *
      * @return mixed
+     * @throws RandomException
      */
     public function handle($request, Closure $next)
     {
@@ -37,7 +38,7 @@ class TwoStepMiddleware
             default:
                 session(['nextUri' => $nextUri]);
 
-                if (config('laravel2step.laravel2stepEnabled')) {
+                if (config('laravel-two-step.laravel2stepEnabled')) {
                     if ($this->twoStepVerification($request) !== true) {
                         return redirect('verification/needed');
                     }

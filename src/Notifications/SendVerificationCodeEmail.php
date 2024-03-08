@@ -58,12 +58,12 @@ class SendVerificationCodeEmail extends Notification implements ShouldQueue
     {
         $message = new MailMessage();
         $message
-            ->from(config('laravel2step.verificationEmailFrom'), config('laravel2step.verificationEmailFromName'))
-            ->subject(trans('laravel2step::laravel-verification.verificationEmailSubject'))
-            ->greeting(trans('laravel2step::laravel-verification.verificationEmailGreeting', ['username' => $this->user->name]))
-            ->line(trans('laravel2step::laravel-verification.verificationEmailMessage'))
+            ->from(config('laravel-two-step.verificationEmailFrom'), config('laravel-two-step.verificationEmailFromName'))
+            ->subject(trans('laravel-two-step::laravel-verification.verificationEmailSubject'))
+            ->greeting(trans('laravel-two-step::laravel-verification.verificationEmailGreeting', ['username' => $this->user->name]))
+            ->line(trans('laravel-two-step::laravel-verification.verificationEmailMessage'))
             ->line($this->code)
-            ->action(trans('laravel2step::laravel-verification.verificationEmailButton'), route('laravel2step::verificationNeeded'));
+            ->action(trans('laravel-two-step::laravel-verification.verificationEmailButton'), route('laravel-two-step::verificationNeeded'));
 
         return $message;
     }

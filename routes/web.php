@@ -4,13 +4,18 @@
 |--------------------------------------------------------------------------
 | Laravel 2-Step Verification Web Routes
 |--------------------------------------------------------------------------
-|
 */
 
-Route::group(
-    ['prefix' => 'verification', 'as' => 'laravel2step::', 'namespace' => 'jeremykenedy\laravel2step\App\Http\Controllers', 'middleware' => ['web']], function () {
-        Route::get('/needed', ['uses' => 'TwoStepController@showVerification'])->name('verificationNeeded');
-        Route::post('/verify', ['uses' => 'TwoStepController@verify'])->name('verify');
-        Route::post('/resend', ['uses' => 'TwoStepController@resend'])->name('resend');
+use CodeBros\TwoStep\Http\Controllers\TwoStepController;
+
+Route::group([
+    'prefix' => 'verification',
+    'as' => 'laravel-two-step::',
+    'namespace' => 'CodeBros\TwoStep\Http\Controllers',
+    'middleware' => ['web']
+], function () {
+        Route::get('needed', [TwoStepController::class, 'showVerification'])->name('verificationNeeded');
+        Route::post('verify', [TwoStepController::class, 'verify'])->name('verify');
+        Route::post('resend', [TwoStepController::class, 'resend'])->name('resend');
     }
 );

@@ -1,7 +1,7 @@
-@extends('laravel2step::layouts.app')
+@extends('laravel-two-step::layouts.app')
 
 @section('title')
-    {{ trans('laravel2step::laravel-verification.title') }}
+    {{ trans('laravel-two-step::laravel-verification.title') }}
 @endsection
 
 @php
@@ -32,11 +32,11 @@ switch ($remainingAttempts) {
             <div class="panel panel verification-form-panel">
                 <div class="panel-heading text-center" id="verification_status_title">
                     <h3>
-                        {{ trans('laravel2step::laravel-verification.title') }}
+                        {{ trans('laravel-two-step::laravel-verification.title') }}
                     </h3>
                     <p class="text-center">
                         <em>
-                            {{ trans('laravel2step::laravel-verification.subtitle') }}
+                            {{ trans('laravel-two-step::laravel-verification.subtitle') }}
                         </em>
                     </p>
                 </div>
@@ -48,7 +48,7 @@ switch ($remainingAttempts) {
                             <div class="col-xs-3">
                                 <div class="{{ $errors->has('v_input_1') ? ' has-error' : '' }}">
                                     <label for="v_input_1" class="sr-only control-label">
-                                        {{ trans('laravel2step::laravel-verification.inputAlt1') }}
+                                        {{ trans('laravel-two-step::laravel-verification.inputAlt1') }}
                                     </label>
                                     <input type="text"  id="v_input_1" class="form-control text-center required" required name="v_input_1" value="" autofocus maxlength="1" minlength="1" tabindex="1" placeholder="•">
                                     @if ($errors->has('v_input_1'))
@@ -61,7 +61,7 @@ switch ($remainingAttempts) {
                             <div class="col-xs-3">
                                 <div class="{{ $errors->has('v_input_2') ? ' has-error' : '' }}">
                                     <label for="v_input_2" class="sr-only control-label">
-                                        {{ trans('laravel2step::laravel-verification.inputAlt2') }}
+                                        {{ trans('laravel-two-step::laravel-verification.inputAlt2') }}
                                     </label>
                                     <input type="text"  id="v_input_2" class="form-control text-center required" required name="v_input_2" value="" maxlength="1" minlength="1" tabindex="2" placeholder="•">
                                     @if ($errors->has('v_input_2'))
@@ -74,7 +74,7 @@ switch ($remainingAttempts) {
                             <div class="col-xs-3">
                                 <div class="{{ $errors->has('v_input_3') ? ' has-error' : '' }}">
                                     <label for="v_input_3" class="sr-only control-label">
-                                        {{ trans('laravel2step::laravel-verification.inputAlt3') }}
+                                        {{ trans('laravel-two-step::laravel-verification.inputAlt3') }}
                                     </label>
                                     <input type="text"  id="v_input_3" class="form-control text-center required" required name="v_input_3" value="" maxlength="1" minlength="1" tabindex="3" placeholder="•">
                                     @if ($errors->has('v_input_3'))
@@ -87,7 +87,7 @@ switch ($remainingAttempts) {
                             <div class="col-xs-3">
                                 <div class="{{ $errors->has('v_input_4') ? ' has-error' : '' }}">
                                     <label for="v_input_4" class="sr-only control-label">
-                                        {{ trans('laravel2step::laravel-verification.inputAlt4') }}
+                                        {{ trans('laravel-two-step::laravel-verification.inputAlt4') }}
                                     </label>
                                     <input type="text"  id="v_input_4" class="form-control text-center required last-input " required name="v_input_4" value="" maxlength="1" minlength="1" tabindex="4" placeholder="•">
                                     @if ($errors->has('v_input_4'))
@@ -103,19 +103,19 @@ switch ($remainingAttempts) {
                                 <div class="col-xs-8 col-xs-offset-2 text-center submit-container">
                                     <button type="submit" class="btn btn-lg btn-{{ $remainingAttemptsClass }} btn-block" id="submit_verification" tabindex="5">
                                         <i class="glyphicon glyphicon-check" aria-hidden="true"></i>
-                                        {{ trans('laravel2step::laravel-verification.verifyButton') }}
+                                        {{ trans('laravel-two-step::laravel-verification.verifyButton') }}
                                     </button>
                                 </div>
                                 <div class="col-xs-12 text-center">
                                     <p class="text-{{ $remainingAttemptsClass }}">
                                         <small>
-                                            <span id="remaining_attempts">{{ $remainingAttempts }}</span> {{ trans_choice('laravel2step::laravel-verification.attemptsRemaining', $remainingAttempts) }}
+                                            <span id="remaining_attempts">{{ $remainingAttempts }}</span> {{ trans_choice('laravel-two-step::laravel-verification.attemptsRemaining', $remainingAttempts) }}
                                         </small>
                                     </p>
                                 </div>
                                 <div class="col-xs-12 text-center">
                                     <a class="btn btn-link" id="resend_code_trigger" href="#" tabindex="6">
-                                        {{ trans('laravel2step::laravel-verification.missingCode') }}
+                                        {{ trans('laravel-two-step::laravel-verification.missingCode') }}
                                     </a>
                                 </div>
                             </div>
@@ -136,13 +136,13 @@ switch ($remainingAttempts) {
 @section('foot')
 
     @php
-        $minutesToExpire = config('laravel2step.laravel2stepExceededCountdownMinutes');
+        $minutesToExpire = config('laravel-two-step.laravel2stepExceededCountdownMinutes');
         $hoursToExpire = $minutesToExpire / 60;
     @endphp
 
     <script type="text/javascript" src="/js/jquery-3.4.1.js"></script>
 
-    @include('laravel2step::scripts.input-parsing-auto-stepper');
+    @include('laravel-two-step::scripts.input-parsing-auto-stepper');
 
     <script>
 
@@ -178,8 +178,8 @@ switch ($remainingAttempts) {
                             case 0:
                                 submitTrigger.addClass('btn-danger');
                                 swal(
-                                  "{{ trans('laravel2step::laravel-verification.verificationLockedTitle') }}",
-                                  "{{ trans('laravel2step::laravel-verification.verificationLockedMessage') }}",
+                                  "{{ trans('laravel-two-step::laravel-verification.verificationLockedTitle') }}",
+                                  "{{ trans('laravel-two-step::laravel-verification.verificationLockedMessage') }}",
                                   'error'
                                 );
                                 break;
@@ -187,8 +187,8 @@ switch ($remainingAttempts) {
                             case 1:
                                 submitTrigger.addClass('btn-danger');
                                 swal(
-                                  "{{ trans('laravel2step::laravel-verification.verificationWarningTitle') }}",
-                                  "{{ trans('laravel2step::laravel-verification.verificationWarningMessage', ['hours' => $hoursToExpire, 'minutes' => $minutesToExpire,]) }}",
+                                  "{{ trans('laravel-two-step::laravel-verification.verificationWarningTitle') }}",
+                                  "{{ trans('laravel-two-step::laravel-verification.verificationWarningMessage', ['hours' => $hoursToExpire, 'minutes' => $minutesToExpire,]) }}",
                                   'error'
                                 );
                                 break;
@@ -207,7 +207,7 @@ switch ($remainingAttempts) {
                         }
 
                         if (remainingAttempts === 0) {
-                            $('#verification_status_title').html('<h3>{{ trans('laravel2step::laravel-verification.titleFailed') }}</h3>');
+                            $('#verification_status_title').html('<h3>{{ trans('laravel-two-step::laravel-verification.titleFailed') }}</h3>');
                             varificationForm.fadeOut(100, function() {
 
                                 $('#failed_login_alert').show();
@@ -277,7 +277,7 @@ switch ($remainingAttempts) {
                     allowOutsideClick: false,
                     buttonsStyling: false,
                     confirmButtonClass: 'btn btn-lg btn-' + status,
-                    confirmButtonText: "{{ trans('laravel2step::laravel-verification.verificationModalConfBtn') }}",
+                    confirmButtonText: "{{ trans('laravel-two-step::laravel-verification.verificationModalConfBtn') }}",
                 });
                 self.removeClass('disabled').attr("disabled", false);
             }

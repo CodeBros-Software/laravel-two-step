@@ -1,13 +1,14 @@
 <?php
 
-namespace jeremykenedy\laravel2step\App\Http\Controllers;
+namespace CodeBros\TwoStep\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Auth;
 use Carbon\Carbon;
+use CodeBros\TwoStep\Traits\TwoStepTrait;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use jeremykenedy\laravel2step\App\Traits\TwoStepTrait;
-use Validator;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Validator;
+use Random\RandomException;
 
 class TwoStepController extends Controller
 {
@@ -40,9 +41,9 @@ class TwoStepController extends Controller
      *
      * @return void
      */
-    private function setUser2StepData()
+    private function setUser2StepData(): void
     {
-        $user = Auth::User();
+        $user = auth()->user();
         $twoStepAuth = $this->getTwoStepAuthStatus($user->id);
         $authCount = $twoStepAuth->authCount;
         $this->_user = $user;
@@ -81,12 +82,11 @@ class TwoStepController extends Controller
      * Show the twostep verification form.
      *
      * @return \Illuminate\Http\Response
+     * @throws RandomException
      */
     public function showVerification()
     {
-        if (!config('laravel2step.laravel2stepEnabled')) {
-            abort(404);
-        }
+        abort_if(! config('laravel-two-step.laravel2stepEnabled'), 404);
 
         $twoStepAuth = $this->_twoStepAuth;
         $authStatus = $this->_authStatus;
@@ -106,22 +106,23 @@ class TwoStepController extends Controller
             $data['timeUntilUnlock'] = $exceededTimeDetails['tomorrow'];
             $data['timeCountdownUnlock'] = $exceededTimeDetails['remaining'];
 
-            return View('laravel2step::twostep.exceeded')->with($data);
+            return view('laravel-two-step::twostep.exceeded', $data);
         }
 
         $now = new Carbon();
         $sentTimestamp = $twoStepAuth->requestDate;
 
-        if (!$twoStepAuth->authCode) {
+        if (! $twoStepAuth->authCode) {
             $twoStepAuth->authCode = $this->generateCode();
             $twoStepAuth->save();
         }
 
-        if (!$sentTimestamp) {
+        if (! $sentTimestamp) {
             $this->sendVerificationCodeNotification($twoStepAuth);
         } else {
             $timeBuffer = config('laravel2step.laravel2stepTimeResetBufferSeconds');
             $timeAllowedToSendCode = $sentTimestamp->addSeconds($timeBuffer);
+
             if ($now->gt($timeAllowedToSendCode)) {
                 $this->sendVerificationCodeNotification($twoStepAuth);
                 $twoStepAuth->requestDate = new Carbon();
@@ -129,7 +130,7 @@ class TwoStepController extends Controller
             }
         }
 
-        return View('laravel2step::twostep.verification')->with($data);
+        return view('laravel-two-step::twostep.verification', $data);
     }
 
     /**
@@ -141,9 +142,7 @@ class TwoStepController extends Controller
      */
     public function verify(Request $request)
     {
-        if (!config('laravel2step.laravel2stepEnabled')) {
-            abort(404);
-        }
+        abort_if(! config('laravel-two-step.laravel2stepEnabled'), 404);
 
         if ($request->ajax()) {
             $validator = Validator::make($request->all(), [
@@ -172,34 +171,32 @@ class TwoStepController extends Controller
 
             $returnData = [
                 'nextUri' => session('nextUri', '/'),
-                'message' => trans('laravel2step::laravel-verification.titlePassed'),
+                'message' => trans('laravel-two-step::laravel-verification.titlePassed'),
             ];
 
             return response()->json($returnData, 200);
-        } else {
-            abort(404);
         }
+
+        abort(404);
     }
 
     /**
      * Resend the validation code triggered by user.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function resend()
+    public function resend(): JsonResponse
     {
-        if (!config('laravel2step.laravel2stepEnabled')) {
-            abort(404);
-        }
+        abort_if(! config('laravel-two-step.laravel2stepEnabled'), 404);
 
         $twoStepAuth = $this->_twoStepAuth;
         $this->sendVerificationCodeNotification($twoStepAuth);
 
         $returnData = [
-            'title'   => trans('laravel2step::laravel-verification.verificationEmailSuccess'),
-            'message' => trans('laravel2step::laravel-verification.verificationEmailSentMsg'),
+            'title' => trans('laravel-two-step::laravel-verification.verificationEmailSuccess'),
+            'message' => trans('laravel-two-step::laravel-verification.verificationEmailSentMsg'),
         ];
 
-        return response()->json($returnData, 200);
+        return response()->json($returnData);
     }
 }
