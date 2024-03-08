@@ -12,10 +12,10 @@ Route::group([
     'prefix' => 'verification',
     'as' => 'laravel-two-step::',
     'namespace' => 'CodeBros\TwoStep\Http\Controllers',
-    'middleware' => ['web']
+    'middleware' => ['web'],
 ], function () {
-        Route::get('needed', [TwoStepController::class, 'showVerification'])->name('verificationNeeded');
-        Route::post('verify', [TwoStepController::class, 'verify'])->name('verify');
-        Route::post('resend', [TwoStepController::class, 'resend'])->name('resend');
-    }
+    Route::get('needed', [TwoStepController::class, 'showVerification'])->name('verificationNeeded');
+    Route::post('verify', [TwoStepController::class, 'verify'])->name('verify');
+    Route::post('resend', [TwoStepController::class, 'resend'])->name('resend');
+}
 );

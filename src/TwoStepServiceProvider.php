@@ -50,7 +50,7 @@ class TwoStepServiceProvider extends ServiceProvider
         $publishTag = 'laravel2step';
 
         $this->publishes([
-            __DIR__ . '/../config/laravel-two-step.php' => base_path('config/laravel-two-step.php'),
+            __DIR__.'/../config/laravel-two-step.php' => base_path('config/laravel-two-step.php'),
         ], $publishTag);
 
         $this->publishes([

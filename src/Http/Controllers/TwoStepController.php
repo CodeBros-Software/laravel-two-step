@@ -15,9 +15,13 @@ class TwoStepController extends Controller
     use TwoStepTrait;
 
     private $_authCount;
+
     private $_authStatus;
+
     private $_twoStepAuth;
+
     private $_remainingAttempts;
+
     private $_user;
 
     /**
@@ -38,8 +42,6 @@ class TwoStepController extends Controller
 
     /**
      * Set the User2Step Variables.
-     *
-     * @return void
      */
     private function setUser2StepData(): void
     {
@@ -56,8 +58,7 @@ class TwoStepController extends Controller
     /**
      * Validation and Invalid code failed actions and return message.
      *
-     * @param array $errors (optional)
-     *
+     * @param  array  $errors  (optional)
      * @return array
      */
     private function invalidCodeReturnData($errors = null)
@@ -66,8 +67,8 @@ class TwoStepController extends Controller
         $this->_twoStepAuth->save();
 
         $returnData = [
-            'message'           => trans('laravel2step::laravel-verification.titleFailed'),
-            'authCount'         => $this->_authCount,
+            'message' => trans('laravel2step::laravel-verification.titleFailed'),
+            'authCount' => $this->_authCount,
             'remainingAttempts' => $this->_remainingAttempts,
         ];
 
@@ -82,6 +83,7 @@ class TwoStepController extends Controller
      * Show the twostep verification form.
      *
      * @return \Illuminate\Http\Response
+     *
      * @throws RandomException
      */
     public function showVerification()
@@ -96,7 +98,7 @@ class TwoStepController extends Controller
         }
 
         $data = [
-            'user'              => $this->_user,
+            'user' => $this->_user,
             'remainingAttempts' => $this->_remainingAttempts + 1,
         ];
 
@@ -136,7 +138,6 @@ class TwoStepController extends Controller
     /**
      * Verify the user code input.
      *
-     * @param Request $request
      *
      * @return \Illuminate\Http\Response
      */
@@ -182,8 +183,6 @@ class TwoStepController extends Controller
 
     /**
      * Resend the validation code triggered by user.
-     *
-     * @return JsonResponse
      */
     public function resend(): JsonResponse
     {

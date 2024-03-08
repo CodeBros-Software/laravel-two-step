@@ -14,10 +14,10 @@ class TwoStepMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param \Closure $response
-     *
+     * @param  Request  $request
+     * @param  \Closure  $response
      * @return mixed
+     *
      * @throws RandomException
      */
     public function handle($request, Closure $next)

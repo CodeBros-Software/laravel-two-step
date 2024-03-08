@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Random\RandomException;
 
@@ -18,9 +17,8 @@ trait TwoStepTrait
     /**
      * Check if the user is authorized.
      *
-     * @param Request $request
+     * @param  Request  $request
      *
-     * @return bool
      * @throws RandomException
      */
     public function twoStepVerification($request): bool
@@ -47,9 +45,7 @@ trait TwoStepTrait
     /**
      * Check time since user was last verified and take apprpriate action.
      *
-     * @param TwoStepAuth $twoStepAuth
      *
-     * @return bool
      * @throws RandomException
      */
     private function checkTimeSinceVerified(TwoStepAuth $twoStepAuth): bool
@@ -71,9 +67,7 @@ trait TwoStepTrait
     /**
      * Reset TwoStepAuth collection item and code.
      *
-     * @param TwoStepAuth $twoStepAuth
      *
-     * @return TwoStepAuth
      * @throws RandomException
      */
     private function resetAuthStatus(TwoStepAuth $twoStepAuth): TwoStepAuth
@@ -92,11 +86,7 @@ trait TwoStepTrait
     /**
      * Generate Authorization Code.
      *
-     * @param int $length
-     * @param string $prefix
-     * @param string $suffix
      *
-     * @return string
      * @throws RandomException
      */
     private function generateCode(int $length = 4, string $prefix = '', string $suffix = ''): string
@@ -110,19 +100,15 @@ trait TwoStepTrait
 
     /**
      * Create/retrieve 2step verification object.
-     *
-     * @param int $userId
-     *
-     * @return TwoStepAuth
      */
     private function checkTwoStepAuthStatus(int $userId): TwoStepAuth
     {
         $twoStepAuth = TwoStepAuth::firstOrCreate([
             'userId' => $userId,
-            ], [
-                'authCode'  => $this->generateCode(),
-                'authCount' => 0,
-            ]);
+        ], [
+            'authCode' => $this->generateCode(),
+            'authCount' => 0,
+        ]);
 
         return $twoStepAuth;
     }
@@ -130,7 +116,6 @@ trait TwoStepTrait
     /**
      * Retrieve the Verification Status.
      *
-     * @param int $userId
      *
      * @return Builder|Model
      */
@@ -142,9 +127,7 @@ trait TwoStepTrait
     /**
      * Format verification exceeded timings with Carbon.
      *
-     * @param string $time
-     *
-     * @return Collection
+     * @param  string  $time
      */
     protected function exceededTimeParser($time): Collection
     {
@@ -152,7 +135,7 @@ trait TwoStepTrait
         $remaining = $time->addMinutes(config('laravel2step.laravel2stepExceededCountdownMinutes'))->diffForHumans(null, true);
 
         $data = [
-            'tomorrow'  => $tomorrow,
+            'tomorrow' => $tomorrow,
             'remaining' => $remaining,
         ];
 
@@ -162,9 +145,7 @@ trait TwoStepTrait
     /**
      * Check if time since account lock has expired and return true if account verification can be reset.
      *
-     * @param \DateTime $time
-     *
-     * @return bool
+     * @param  \DateTime  $time
      */
     protected function checkExceededTime($time): bool
     {
@@ -182,8 +163,7 @@ trait TwoStepTrait
     /**
      * Method to reset code and count.
      *
-     * @param collection $twoStepEntry
-     *
+     * @param  collection  $twoStepEntry
      * @return collection
      */
     protected function resetExceededTime($twoStepEntry)
@@ -198,8 +178,7 @@ trait TwoStepTrait
     /**
      * Successful activation actions.
      *
-     * @param collection $twoStepAuth
-     *
+     * @param  collection  $twoStepAuth
      * @return void
      */
     protected function resetActivationCountdown($twoStepAuth)
@@ -215,10 +194,6 @@ trait TwoStepTrait
 
     /**
      * Send verification code via notify.
-     *
-     * @param TwoStepAuth $twoStepAuth
-     *
-     * @return void
      */
     protected function sendVerificationCodeNotification(TwoStepAuth $twoStepAuth): void
     {
@@ -233,10 +208,10 @@ trait TwoStepTrait
                 ->withToken(env('OTP_AUTH_TOKEN'))
                 ->post('messages', [
                     'body' => 'Code: '.$twoStepAuth->authCode,
-                    "encoding" => "auto",
-                    "originator" => env('OTP_FROM'),
-                    "recipients" => [$user->mobiel],
-                    "route" => env('OTP_ROUTE'),
+                    'encoding' => 'auto',
+                    'originator' => env('OTP_FROM'),
+                    'recipients' => [$user->mobiel],
+                    'route' => env('OTP_ROUTE'),
                 ])->json();
         }
 

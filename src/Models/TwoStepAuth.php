@@ -51,12 +51,12 @@ class TwoStepAuth extends Model
     ];
 
     protected $casts = [
-        'userId'     => 'integer',
-        'authCode'   => 'string',
-        'authCount'  => 'integer',
+        'userId' => 'integer',
+        'authCode' => 'string',
+        'authCount' => 'integer',
         'authStatus' => 'boolean',
         'requestDate' => 'datetime',
-        'authDate'    => 'datetime',
+        'authDate' => 'datetime',
     ];
 
     /**
@@ -100,18 +100,17 @@ class TwoStepAuth extends Model
     /**
      * Get a validator for an incoming Request.
      *
-     * @param array $merge (rules to optionally merge)
-     *
+     * @param  array  $merge  (rules to optionally merge)
      * @return array
      */
     public static function rules($merge = [])
     {
         return array_merge([
-            'userId'     => 'required|integer',
-            'authCode'   => 'required|string|max:4|min:4',
-            'authCount'  => 'required|integer',
+            'userId' => 'required|integer',
+            'authCode' => 'required|string|max:4|min:4',
+            'authCount' => 'required|integer',
             'authStatus' => 'required|boolean',
         ],
-        $merge);
+            $merge);
     }
 }

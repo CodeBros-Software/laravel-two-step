@@ -1,6 +1,6 @@
 <?php
 
-namespace jeremykenedy\laravel2step\Test;
+namespace CodeBros\TwoStep\Tests;
 
 use CodeBros\TwoStep\Http\Middleware\TwoStepMiddleware;
 use CodeBros\TwoStep\TwoStepServiceProvider;
@@ -11,8 +11,7 @@ class TestCase extends OrchestraTestCase
     /**
      * Load package service provider.
      *
-     * @param \Illuminate\Foundation\Application $app
-     *
+     * @param  \Illuminate\Foundation\Application  $app
      * @return string[]
      */
     protected function getPackageProviders($app)
@@ -23,8 +22,7 @@ class TestCase extends OrchestraTestCase
     /**
      * Load package alias.
      *
-     * @param \Illuminate\Foundation\Application $app
-     *
+     * @param  \Illuminate\Foundation\Application  $app
      * @return array
      */
     protected function getPackageAliases($app)

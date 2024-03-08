@@ -12,6 +12,7 @@ class SendVerificationCodeEmail extends Notification implements ShouldQueue
     use Queueable;
 
     protected $code;
+
     protected $user;
 
     /**
@@ -26,8 +27,7 @@ class SendVerificationCodeEmail extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param mixed $notifiable
-     *
+     * @param  mixed  $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -35,7 +35,7 @@ class SendVerificationCodeEmail extends Notification implements ShouldQueue
         return ['mail'];
     }
 
-     /**
+    /**
      * Determine which queues should be used for each notification channel.
      *
      * @return array
@@ -46,12 +46,11 @@ class SendVerificationCodeEmail extends Notification implements ShouldQueue
             'mail' => config('laravel2step.laravel2stepEmailQueue'),
         ];
     }
-    
+
     /**
      * Get the mail representation of the notification.
      *
-     * @param mixed $notifiable
-     *
+     * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
