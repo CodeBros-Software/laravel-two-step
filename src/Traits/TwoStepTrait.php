@@ -103,14 +103,7 @@ trait TwoStepTrait
      */
     private function checkTwoStepAuthStatus(int $userId): TwoStepAuth
     {
-        $twoStepAuth = TwoStepAuth::firstOrCreate([
-            'userId' => $userId,
-        ], [
-            'authCode' => $this->generateCode(),
-            'authCount' => 0,
-        ]);
-
-        return $twoStepAuth;
+        return TwoStepAuth::firstOrCreate(['userId' => $userId], ['authCode' => $this->generateCode()]);
     }
 
     /**
