@@ -1,9 +1,9 @@
 <?php
 
+use CodeBros\TwoStep\Models\TwoStepAuth;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use jeremykenedy\laravel2step\App\Models\TwoStepAuth;
 
 class CreateTwoStepAuthTable extends Migration
 {
@@ -22,7 +22,7 @@ class CreateTwoStepAuthTable extends Migration
         if (! $tableCheck) {
             Schema::connection($connection)->create($table, function (Blueprint $table) {
                 $table->increments('id');
-                $table->unsignedBigInteger('userId')->unsigned()->index();
+                $table->unsignedInteger('userId')->unsigned()->index();
                 $table->foreign('userId')->references('id')->on('users')->onDelete('cascade');
                 $table->string('authCode')->nullable();
                 $table->integer('authCount');

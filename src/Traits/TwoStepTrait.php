@@ -50,7 +50,7 @@ trait TwoStepTrait
      */
     private function checkTimeSinceVerified(TwoStepAuth $twoStepAuth): bool
     {
-        $expireMinutes = config('laravel2step.laravel2stepVerifiedLifetimeMinutes');
+        $expireMinutes = config('laravel-two-step.laravel2stepVerifiedLifetimeMinutes');
         $now = Carbon::now();
         $expire = Carbon::parse($twoStepAuth->authDate)->addMinutes($expireMinutes);
         $expired = $now->gt($expire);
@@ -101,9 +101,20 @@ trait TwoStepTrait
     /**
      * Create/retrieve 2step verification object.
      */
-    private function checkTwoStepAuthStatus(int $userId): TwoStepAuth
+    private function checkTwoStepAuthStatus(int $userId)
     {
-        return TwoStepAuth::firstOrCreate(['userId' => $userId], ['authCode' => $this->generateCode()]);
+        $twoStepAuth = TwoStepAuth::firstOrCreate(
+            [
+                'userId' => $userId,
+            ],
+            [
+                'userId'    => $userId,
+                'authCode'  => $this->generateCode(),
+                'authCount' => 0,
+            ]
+        );
+
+        return $twoStepAuth;
     }
 
     /**
@@ -124,8 +135,8 @@ trait TwoStepTrait
      */
     protected function exceededTimeParser($time): Collection
     {
-        $tomorrow = Carbon::parse($time)->addMinutes(config('laravel2step.laravel2stepExceededCountdownMinutes'))->format('l, F jS Y h:i:sa');
-        $remaining = $time->addMinutes(config('laravel2step.laravel2stepExceededCountdownMinutes'))->diffForHumans(null, true);
+        $tomorrow = Carbon::parse($time)->addMinutes(config('laravel-two-step.laravel2stepExceededCountdownMinutes'))->format('l, F jS Y h:i:sa');
+        $remaining = $time->addMinutes(config('laravel-two-step.laravel2stepExceededCountdownMinutes'))->diffForHumans(null, true);
 
         $data = [
             'tomorrow' => $tomorrow,
@@ -143,7 +154,7 @@ trait TwoStepTrait
     protected function checkExceededTime($time): bool
     {
         $now = Carbon::now();
-        $expire = Carbon::parse($time)->addMinutes(config('laravel2step.laravel2stepExceededCountdownMinutes'));
+        $expire = Carbon::parse($time)->addMinutes(config('laravel-two-step.laravel2stepExceededCountdownMinutes'));
         $expired = $now->gt($expire);
 
         if ($expired) {

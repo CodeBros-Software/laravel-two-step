@@ -43,7 +43,7 @@ class SendVerificationCodeEmail extends Notification implements ShouldQueue
     public function viaQueues()
     {
         return [
-            'mail' => config('laravel2step.laravel2stepEmailQueue'),
+            'mail' => config('laravel-two-step.laravel2stepEmailQueue'),
         ];
     }
 

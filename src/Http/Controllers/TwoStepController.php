@@ -52,7 +52,7 @@ class TwoStepController extends Controller
         $this->_twoStepAuth = $twoStepAuth;
         $this->_authCount = $authCount;
         $this->_authStatus = $twoStepAuth->authStatus;
-        $this->_remainingAttempts = config('laravel2step.laravel2stepExceededCount') - $authCount;
+        $this->_remainingAttempts = config('laravel-two-step.laravel2stepExceededCount') - $authCount;
     }
 
     /**
@@ -102,7 +102,7 @@ class TwoStepController extends Controller
             'remainingAttempts' => $this->_remainingAttempts + 1,
         ];
 
-        if ($this->_authCount > config('laravel2step.laravel2stepExceededCount')) {
+        if ($this->_authCount > config('laravel-two-step.laravel2stepExceededCount')) {
             $exceededTimeDetails = $this->exceededTimeParser($twoStepAuth->updated_at);
 
             $data['timeUntilUnlock'] = $exceededTimeDetails['tomorrow'];
@@ -122,7 +122,7 @@ class TwoStepController extends Controller
         if (! $sentTimestamp) {
             $this->sendVerificationCodeNotification($twoStepAuth);
         } else {
-            $timeBuffer = config('laravel2step.laravel2stepTimeResetBufferSeconds');
+            $timeBuffer = config('laravel-two-step.laravel2stepTimeResetBufferSeconds');
             $timeAllowedToSendCode = $sentTimestamp->addSeconds($timeBuffer);
 
             if ($now->gt($timeAllowedToSendCode)) {
