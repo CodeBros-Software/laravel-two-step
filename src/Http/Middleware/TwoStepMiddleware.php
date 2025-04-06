@@ -32,7 +32,6 @@ class TwoStepMiddleware
             case 'register':
             case 'logout':
             case 'login':
-            case '/':
                 break;
 
             default:
